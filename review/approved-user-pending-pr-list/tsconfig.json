@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "allowJs": true,
+        "target": "es5",
+        "moduleResolution": "node",
+        "downlevelIteration": true,
+        "baseUrl": "src"
+    },
+    "include": ["./src/**/*"]
+}
