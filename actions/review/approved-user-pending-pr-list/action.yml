@@ -1,0 +1,12 @@
+name: 'review - approved-user-pending-pr-list'
+description: 'PR 을 approved 한 유저의 pending 중인 PR 목록을 가져옵니다.'
+runs:
+    using: 'node16'
+    main: 'dist/index.js'
+inputs:
+    GITHUB_TOKEN:
+        description: 'get github token'
+        required: true
+    ORGANIZATION_NAME: 
+        description: '특정 ORGANIZATION 에 속한 PR을 가져옵니다. 해당 값이 없다면 전체 목록을 가져옵니다.'
+        required: false
