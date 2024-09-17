@@ -5,7 +5,7 @@
     "author": "@copiest",
     "main": "index.js",
     "scripts": {
-        "build": "npx ncc build src/index.ts"
+        "build": "npx ncc build src/index.ts -o dist --transpile-only --minify"
     },
     "repository": {
         "type": "git",

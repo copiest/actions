@@ -39,6 +39,8 @@ importers:
         specifier: ^5.0.4
         version: 5.6.2
 
+  review/approved-user-pending-pr-list: {}
+
 packages:
 
   '@actions/core@1.10.1':
