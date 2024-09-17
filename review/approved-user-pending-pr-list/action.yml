@@ -8,5 +8,5 @@ inputs:
         description: 'get github token'
         required: true
     ORGANIZATION_NAME: 
-        description: '특정 ORGANIZATION 에 속한 PR을 가져옵니다. 해당 값이 없다면 전체 목록을 가져옵니다.'
-        required: false
+        description: '특정 ORGANIZATION 에 속한 PR을 가져옵니다.'
+        required: true

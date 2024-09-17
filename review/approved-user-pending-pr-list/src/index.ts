@@ -2,8 +2,19 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 
 async function main() {
-    const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
+    const 승인한유저 = await getApproveUser()
 
+    // 조직의 모든 레포를 가져온다.
+    const repos = await getAllRepos()
+
+    // 승인한유저가 대기하고있는 PR 목록을 가져온다.
+    const PR = await getPR(repos, 승인한유저)
+
+    console.log('PR', JSON.stringify(PR)) // eslint-disable-line
+}
+
+async function getApproveUser() {
+    const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
     const octokit = github.getOctokit(GITHUB_TOKEN)
 
     const context = github.context
@@ -15,18 +26,16 @@ async function main() {
         pull_number: pull_request.number,
     })
 
-    console.log('reviews', JSON.stringify(reviews)) // eslint-disable-line
-
     // 승인(approve) 상태의 리뷰만 필터링
     const 전체승인목록 = reviews.filter((review) => review.state === 'APPROVED')
-    // const 가장최신의승인 = 전체승인목록[전체승인목록.length - 1]
+    return 전체승인목록[전체승인목록.length - 1].user.login
+}
 
-    console.log('가장 최신의 어프로브 유저', 전체승인목록[전체승인목록.length - 1].user.login) // eslint-disable-line
+async function getPR(repos: {owner: string; name: string}[], userName: string) {
+    const result = []
 
-    // 조직의 모든 레포를 가져온다.
-    const repos = await getAllRepos()
-
-    console.log('repos', JSON.stringify(repos)) // eslint-disable-line
+    const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
+    const octokit = github.getOctokit(GITHUB_TOKEN)
 
     for (const repo of repos) {
         // 대기 중인 PR 목록 가져오기
@@ -36,8 +45,12 @@ async function main() {
             state: 'open',
         })
 
-        console.log('pulls', JSON.stringify(pulls)) // eslint-disable-line
+        const 승인한유저의PR = pulls.data.filter((pr) => pr.user.login === userName)
+
+        result.push(...승인한유저의PR.map(({title, html_url, number}) => ({title, html_url, number})))
     }
+
+    return result
 }
 
 async function getAllRepos() {
