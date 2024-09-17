@@ -18,15 +18,13 @@ async function main() {
     console.log('reviews', JSON.stringify(reviews)) // eslint-disable-line
 
     // 승인(approve) 상태의 리뷰만 필터링
-    const approvers = reviews.filter((review) => review.state === 'APPROVED')
+    const 전체승인목록 = reviews.filter((review) => review.state === 'APPROVED')
+    // const 가장최신의승인 = 전체승인목록[전체승인목록.length - 1]
 
-    console.log('approvers', JSON.stringify(approvers)) // eslint-disable-line
+    console.log('가장 최신의 어프로브 유저', 전체승인목록[전체승인목록.length - 1].user.login) // eslint-disable-line
 
-    const approversIDS = approvers.map((review) => review.user.login)
-
-    console.log('approversIDS', JSON.stringify(approversIDS)) // eslint-disable-line
-
-    const repos = await getAllRepos(approversIDS[0])
+    // 조직의 모든 레포를 가져온다.
+    const repos = await getAllRepos()
 
     console.log('repos', JSON.stringify(repos)) // eslint-disable-line
 
@@ -42,7 +40,7 @@ async function main() {
     }
 }
 
-async function getAllRepos(userName: string) {
+async function getAllRepos() {
     const result = [] as {owner: string; name: string}[]
     let page = 1
 
@@ -54,18 +52,11 @@ async function getAllRepos(userName: string) {
     while (true) {
         // ORGANIZATION_NAME 이 있다면 조직이 관리하는 레포를 모두 가져옵니다.
         // ORGANIZATION_NAME 값이 없다면 유저의 모든 레포를 가져옵니다.
-        const repos =
-            ORGANIZATION_NAME != null
-                ? await octokit.rest.repos.listForOrg({
-                      org: 'organization-name',
-                      per_page: 100,
-                      page,
-                  })
-                : await octokit.rest.repos.listForUser({
-                      username: userName,
-                      per_page: 100,
-                      page,
-                  })
+        const repos = await octokit.rest.repos.listForOrg({
+            org: ORGANIZATION_NAME,
+            per_page: 100,
+            page,
+        })
 
         if (repos.data.length === 0) {
             break
