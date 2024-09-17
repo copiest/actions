@@ -1,0 +1,9 @@
+# build 제외
+dist
+
+# 깃헙 관련 설정 파일들
+/.github
+
+# package
+package-lock.json
+pnpm-lock.yaml
