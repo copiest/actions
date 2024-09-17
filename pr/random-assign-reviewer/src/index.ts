@@ -10,12 +10,15 @@ async function main() {
     const ORGANIZATION_NAME = core.getInput('ORGANIZATION_NAME')
     const ASSIGN_COUNT = core.getInput('ASSIGN_COUNT')
 
+    const PR생성자 = pull_request.user.login as string
+
     // organization의 멤버 리스트 가져오기
     const members = await octokit.rest.orgs.listMembers({
         org: ORGANIZATION_NAME,
     })
 
-    const orgMemberNames = members.data.map(({login}) => login)
+    // PR을 생성한 유저의 정보는 제거한다.
+    const orgMemberNames = members.data.filter(({login}) => PR생성자 !== login).map(({login}) => login)
 
     // PR에 리뷰어 어사인
     await octokit.rest.pulls.requestReviewers({
